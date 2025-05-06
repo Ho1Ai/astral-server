@@ -1,17 +1,34 @@
 from db_connect import db_projects
+from pydantic import BaseModel
 
 static_content__to_do = [
             {
+                "id": 1,
                 "name": "Make an Application",
                 "state": 1,
                 }, {
+                "id": 2,
                 "name": "Build a Project",
                 "state": 1,
                 }, {
+                "id": 3,
                 "name": "Deploy a Project",
                 "state": 1
                 }
         ]
+
+
+class ToDoData (BaseModel):
+    id: int
+    name: str
+    state: int
+#added before globalDataModels.py, so it is still here. Never mind
+            
+        
+
+
+
+
 
 
 default_projects = [
@@ -37,4 +54,7 @@ async def getInfo(project_name: str):
 async def getAvailableProjects(username: str):
     return default_projects
     
+async def updateProjectInfo(todo_updated: ToDoData):
+    static_content__to_do[todo_updated.id-1]['state'] = todo_updated.state
+    return True
 
