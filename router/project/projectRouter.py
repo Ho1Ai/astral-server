@@ -20,10 +20,11 @@ async def getAvailableProjects(username:str):
     available_projects = await acc_proj_info.getAvailableProjects(username);
     return available_projects
 
-@router.put('/update-todo')
-async def updateToDoState(updateData: globalDataModels.ToDoModel):
+@router.get('/update-todo')
+async def updateToDoState(target_id: int, new_state: int):
     #async def updateToDoState():
     is_ok = await info.updateProjectInfo(updateData)
+    return 0;
     #is_ok = True if id == 25 else False
     #is_ok = True
     #return {'status': 201} if is_ok else {'status': 422}
