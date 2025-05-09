@@ -1,5 +1,6 @@
 from db_connect import db_projects
 from pydantic import BaseModel
+from dataModels.projects import globalDataModels
 
 static_content__to_do = [
             {
@@ -54,7 +55,15 @@ async def getInfo(project_name: str):
 async def getAvailableProjects(username: str):
     return default_projects
     
-async def updateProjectInfo(todo_updated: ToDoData):
+async def updateToDosInfo(todo_updated: ToDoData):
     static_content__to_do[todo_updated.id-1]['state'] = todo_updated.state
+    return True
+
+async def appendNewToDo(name: str, state: int):
+    static_content__to_do.append({
+            "id": len(static_content__to_do),
+            "name":name,
+            "state":state,
+        })
     return True
 

@@ -5,5 +5,9 @@ class ToDoModel (BaseModel):
     name: str
     state: int
 
+class ToDoAppender(BaseModel):
+    name: str
+    state: int
+
 def ToDoModelo():
     pass
