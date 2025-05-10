@@ -22,14 +22,15 @@ async def getAvailableProjects(username:str):
 
 @router.put('/update-todo')
 async def updateToDoState(updateData: globalDataModels.ToDoModel):
-    is_ok = await info.updateToDosInfo(updateData)
+    updater = await info.updateToDosInfo(updateData)
     
-    return {"ok": is_ok};
+    return {"ok": updater.get("is_ok"), "new_TDL": updater.get("new_TDL")};
     #is_ok = True if id == 25 else False
     #is_ok = True
     #return {'status': 201} if is_ok else {'status': 422}
 
 @router.post('/append-todo')
 async def appendToDo(new_to_do: globalDataModels.ToDoAppender):
-    is_ok = await info.appendNewToDo(new_to_do["name"], new_to_do["state"])
-    return {"ok": is_ok}
+    appender = await info.appendNewToDo(new_to_do.name, new_to_do.state)
+    #print(new_to_do.name)
+    return {"ok": appender.get("is_ok"), "new_TDL": appender.get("new_TDL")}

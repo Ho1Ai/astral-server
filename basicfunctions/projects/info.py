@@ -57,13 +57,13 @@ async def getAvailableProjects(username: str):
     
 async def updateToDosInfo(todo_updated: ToDoData):
     static_content__to_do[todo_updated.id-1]['state'] = todo_updated.state
-    return True
+    return {"is_ok": True, "new_TDL": static_content__to_do}
 
 async def appendNewToDo(name: str, state: int):
     static_content__to_do.append({
-            "id": len(static_content__to_do),
+            "id": len(static_content__to_do)+1,
             "name":name,
             "state":state,
         })
-    return True
+    return {"is_ok": True, "new_TDL": static_content__to_do}
 
