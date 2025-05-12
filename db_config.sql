@@ -24,6 +24,6 @@ create table astraldb_users (
 
 create table astraldb_projectusers (
 	id BIGSERIAL primary key,
-	user_id INTEGER references astraldb-users(id),
-	projects_id integer references astraldb-projects(id)
+	user_id INTEGER references astraldb_users(id),
+	projects_id integer references astraldb_projects(id)
 )
