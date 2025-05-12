@@ -6,6 +6,19 @@ from dataModels.projects import globalDataModels
 
 router = APIRouter(prefix="/api/projects", tags=["projects API"])
 
+
+
+#----------PROJECT CREATOR AND OTHERS----------#
+@router.post('/create-new-project')
+async def createNewProject(new_project_data: globalDataModels.ProjectModel):
+    pass
+
+
+
+
+
+
+#----------PROJECT DATA, TODOS AND PROJECT LIST RECEIVER----------#
 @router.get('/get-project-info')
 async def getProjectInfo(project_name:str):
     to_do_list = await info.getToDo(project_name)
