@@ -42,7 +42,8 @@ default_projects = [
             "projectLinksArray": [{
                 "name": "GitHub",
                 "link": "https://github.com/Ho1Ai/project-astral"
-                }]
+                }],
+            "proj_link": "project-astral"
             }
         ]
 
@@ -55,11 +56,24 @@ async def getInfo(project_name: str):
     return default_projects
 
 async def getAvailableProjects(username: str):
+    #print(default_projects)
     return default_projects
     
 
 async def createProject(new_data: globalDataModels.ProjectModel):
-    default_projects.append()
+    default_projects.append({
+        "id":len(default_projects)+1,
+        "name": new_data.name,
+        "description": new_data.description,
+        "authorTeam": new_data.authorTeam,
+        "authorList": ['Ho1Ai'],
+        "projectLinksArray": [{
+            "name":"GitHub",
+            "link":"https://github.com/Ho1Ai/project-astral"
+            }],
+        "proj_link": new_data.link
+        })
+    return True
     
 
 

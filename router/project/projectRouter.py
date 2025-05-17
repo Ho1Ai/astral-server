@@ -11,8 +11,11 @@ router = APIRouter(prefix="/api/projects", tags=["projects API"])
 #----------PROJECT CREATOR AND OTHERS----------#
 @router.post('/create-new-project')
 async def createNewProject(new_project_data: globalDataModels.ProjectModel):
-    new_list = await info.getAvailableProjects('default')
-    return new_list
+    #print(new_project_data.link, "nan?")
+    is_added = await info.createProject(new_project_data)
+    if is_added:
+        new_list = await info.getAvailableProjects('default')
+        return new_list
 
 
 
@@ -31,7 +34,7 @@ async def getAvailableProjects(username:str):
     #to_do_list = info.getToDo(project_name)
     #project_info = info.getInfo(username)
     #return [{"todo":getToDo, "project info": project_info}] #misprint
-    available_projects = await acc_proj_info.getAvailableProjects(username);
+    available_projects = await info.getAvailableProjects(username);
     return available_projects
 
 @router.put('/update-todo')

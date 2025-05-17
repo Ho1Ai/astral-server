@@ -7,7 +7,8 @@ create table astraldb_projects (
 	description text,
 	author_team varchar(255),
 	authors_list varchar(255)[],
-	project_links_array JSONB
+	project_links_array JSONB,
+	proj_link text
 );
 
 create table astraldb_tdl (

@@ -8,6 +8,7 @@ class ProjectModel(BaseModel):
     description: str
     authorTeam: str
     authorsList: list
+    link: str
     #projectLinks: dict
 
 
