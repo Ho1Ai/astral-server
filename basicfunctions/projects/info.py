@@ -49,12 +49,22 @@ default_projects = [
 async def getToDo(project_name:str):
    return static_content__to_do
 
+#----------PROJECT DATA----------
+
 async def getInfo(project_name: str):
     return default_projects
 
 async def getAvailableProjects(username: str):
     return default_projects
     
+
+async def createProject(new_data: globalDataModels.ProjectModel):
+    default_projects.append()
+    
+
+
+#----------INNER PROJECT----------
+
 async def updateToDosInfo(todo_updated: ToDoData):
     static_content__to_do[todo_updated.id-1]['state'] = todo_updated.state
     return {"is_ok": True, "new_TDL": static_content__to_do}

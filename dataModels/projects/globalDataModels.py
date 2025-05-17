@@ -8,7 +8,7 @@ class ProjectModel(BaseModel):
     description: str
     authorTeam: str
     authorsList: list
-
+    #projectLinks: dict
 
 
 
@@ -32,6 +32,6 @@ class ToDoAppender(BaseModel):
 
 
 
-
+#test, never mind
 def ToDoModelo():
     pass

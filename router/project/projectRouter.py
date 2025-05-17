@@ -11,7 +11,8 @@ router = APIRouter(prefix="/api/projects", tags=["projects API"])
 #----------PROJECT CREATOR AND OTHERS----------#
 @router.post('/create-new-project')
 async def createNewProject(new_project_data: globalDataModels.ProjectModel):
-    pass
+    new_list = await info.getAvailableProjects('default')
+    return new_list
 
 
 
