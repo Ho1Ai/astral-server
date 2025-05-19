@@ -19,8 +19,8 @@ create table astraldb_tdl (
 
 create table astraldb_users (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(255) not null,
-	nickname VARCHAR(255) not null,
+	email VARCHAR(255) unique not null,
+	nickname VARCHAR(255) unique not null,
 	passwd text not null,
 	description text,
 	joined_at TIMESTAMP default CURRENT_TIMESTAMP
