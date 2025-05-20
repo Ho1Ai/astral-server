@@ -19,8 +19,10 @@ router = APIRouter(prefix="/api/accounts")
 @router.post('/create-account')
 async def createUser(candidate: adm.AccountCreation):
     test = await accs_service.create_account(candidate)
-    if (test != 0):
-        return {"is_ok": False, "status": test}
+    #test = 0
+    #print(candidate)
+    if (test.get('status_code') != 0):
+        return {"is_ok": False, "status_code": test}
     else:
         return {"is_ok": True}
 
@@ -28,3 +30,4 @@ async def createUser(candidate: adm.AccountCreation):
 @router.post('/user-login')
 async def userLogin(candidate: adm.AccountLogin):
     test = await accs_service.sign_in(candidate)
+    return test
