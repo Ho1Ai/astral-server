@@ -63,7 +63,7 @@ async def sign_in(getter_data: adm.AccountLogin):
                 access_jwt = await token.genAccess(token_data)
                 refresh_jwt = await token.genRefresh(token_data)
                 #print("type:", type(access_jwt))
-                return {'code': 0, 
+                return {'status_code': 0, 
                         'access_JWT': access_jwt,
                         'refresh_JWT': refresh_jwt}
             else:

@@ -29,5 +29,6 @@ async def createUser(candidate: adm.AccountCreation):
 
 @router.post('/user-login')
 async def userLogin(candidate: adm.AccountLogin):
+    #print(candidate) #debug line
     test = await accs_service.sign_in(candidate)
     return test
