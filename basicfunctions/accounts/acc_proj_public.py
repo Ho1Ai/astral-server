@@ -23,7 +23,7 @@ async def getUserPageDataByJWT(access: str, refresh: str):
     pool = await db.db_connect()
     conn = await pool.acquire()
     tester = await token.getTokenInnerData__EMAIL(access, refresh)
-    print(tester)
+    #print(tester)
     try:
         db_getter = await conn.fetchrow('select * from astraldb_users where email = $1', tester.get('email'))
         #print(db_getter)
@@ -36,7 +36,7 @@ async def getUserPageDataByJWT(access: str, refresh: str):
             final_data['access_JWT'] = tester.get('access_JWT')
         if(tester.get('refresh_JWT')):
             final_data['refresh_JWT'] = tester.get('refresh_JWT')
-        print(final_data)
+        #print(final_data)
         return final_data
     except Exception:
         print('exception!')

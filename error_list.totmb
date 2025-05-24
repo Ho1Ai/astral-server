@@ -7,6 +7,6 @@ errors list is here. You can read it if you need more docs for it
 
 
 
-8 - expired refresh token. User must sign in again
+8 - expired refresh token. User must sign in again. On frontend also means that user can't access current page because he is not in account
 
 9 - public data get failed. Hard to say what could go wrong, because this error means that simple get request from public pages drops an error

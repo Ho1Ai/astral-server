@@ -44,9 +44,9 @@ async def genRefresh(data: adm.AccountLogin__tokenGen):
 
 
 
-async def getTokenInnerData__EMAIL(access_token:str, refresh_token: str):
+async def getTokenInnerData__EMAIL(access_token:str, refresh_token: str): # and also refresh it
+    #print(access_token)
     jwt_input = jwt.decode(access_token, cfg_token.get('access_secret'), algorithms=cfg_token.get('algorithm'))
-    print(jwt_input)
     response={'status_code': 0}
     if(datetime.utcnow()>datetime.fromisoformat(jwt_input.get('expire_on'))):
         print('old')

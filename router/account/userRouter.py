@@ -49,7 +49,7 @@ async def getUserData_JWT(request: Request, response: Response):
         tester = await accs_public_funcs.getUserPageDataById(onSearch_infoGetter)
         #print('Я люблю шаурму с сыром')
         if(tester.get('status_code') == 0):
-            print('ok\n', tester)
+            #print('ok\n', tester)
             return(tester)
         else:
             return {'status_code': 9}
@@ -63,16 +63,16 @@ async def getUserData_JWT(request: Request, response: Response):
                        'nickname': tester.get('nickname'),
                        'description': tester.get('description')}
             if (tester.get('access_JWT')):
-                new_res['access_JWT'] = tester.get('access_JWT')
+                new_res['x-jwt-access'] = tester.get('access_JWT')
             if(tester.get('refresh_JWT')):
-                new_res['refresh_JWT'] = tester.get('refresh_JWT')
-            return new_res
+                new_res['x-jwt-refresh'] = tester.get('refresh_JWT')
+            return new_res #top 1 dumbest way of tokens refresh, lol. But it was easy to understand
             
             #new_res = {
             #        'nickname': tester.get('nickname'),
             #        'description': tester.get('description')
             #        }
-            print(tester, '\n', new_res)
+            #print(tester, '\n', new_res)
         else:
             return {'status_code': 9}
         print('Я люблю острую шаурму')
