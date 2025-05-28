@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 #from db_connect import db_connection as db
 
 from dataModels.accounts import accountsDataModels as adm
+from dataModels.token_verify import tokens_list_models as token_models
 
 # sorry for this big sausage. I just wrote it in 3 runs because somewhere I didn't need some of these variables and then I didn't place dotenv_values('.env') in separated variable
 
@@ -80,3 +81,35 @@ async def getTokenInnerData__EMAIL(access_token:str, refresh_token: str): # and 
                         'email': jwt_input.get('email')}
     return response #well, it will just response any way
             
+
+
+def getTokenData(to_unpack_token: str, token_type: str):
+    if(token_type == 'access'):
+        return {'is_ok': True,
+                'data': jwt.decode(to_unpack_token, cfg_token.get('access_secret'), algorithms=cfg_token.get('algorithm'))}
+    elif(token_type == 'refresh'):
+        return {"is_ok": True, 
+                'data': jwt.decode(to_unpack_token, cfg_token.get('refresh_secret'), algorithms=cfg_token.get('algorithm'))}
+    else:
+        return {'is_ok': False,
+                'info': 'couldn\'t recognise token type'}
+
+
+
+
+def checkJWTStatus(access_jwt: str, refresh_jwt: str):
+    current_jwt = jwt.decode(access_jwt, cfg_token.get('access_secret'), algorithms=cfg_token.get('algorithm'))
+    #print(current_jwt)
+    func_return = {'is_ok': True,
+                   'status_code': 0,
+                   'is_access_token_dead': False}
+    
+    if datetime.fromisoformat(current_jwt.get('expire_on'))<datetime.utcnow():
+        print('access is old')
+        func_return['is_access_token_dead']=True
+        current_jwt = jwt.decode(refresh_jwt, cfg_token.get('refresh_secret'), algorithms=cfg_token.get('algorithm'))
+        if datetime.fromisoformat(current_jwt.get('expire_on'))<datetime.utcnow():
+            print('all the tokens expired. Error 8')
+            func_return['is_ok']=False
+            func_return['status_code']=8
+    return func_return

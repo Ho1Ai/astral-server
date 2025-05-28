@@ -1,4 +1,4 @@
-#from db_connect import db_connection
+from db_connect import db_connection as db
 from pydantic import BaseModel
 from dataModels.projects import globalDataModels
 
@@ -57,22 +57,42 @@ async def getInfo(project_name: str):
 
 async def getAvailableProjects(username: str):
     #print(default_projects)
+    
     return default_projects
     
 
 async def createProject(new_data: globalDataModels.ProjectModel):
-    default_projects.append({
-        "id":len(default_projects)+1,
+    pool = await db.db_connect()
+    conn = await pool.acquire()
+    check_name_availability = await conn.fetchrow('select * from astraldb_projects where name = $1', new_data.name)
+    if(check_name_availability):
+        await conn.close()
+        await pool.close()
+        #print('can not create')
+        return {'is_ok': False}
+    new_project_info = {
+            #"id":len(default_projects)+1,
         "name": new_data.name,
         "description": new_data.description,
         "authorTeam": new_data.authorTeam,
-        "authorList": ['Ho1Ai'],
+        "authorsList": ['Ho1Ai','hoxxy'],
         "projectLinksArray": [{
             "name":"GitHub",
             "link":"https://github.com/Ho1Ai/project-astral"
             }],
         "proj_link": new_data.link
-        })
+        }
+
+    appendTest = await conn.execute('insert into astraldb_projects (name, description, author_team, authors_list, proj_link) values($1,$2,$3,$4,$5)', 
+                                    new_project_info['name'], 
+                                    new_project_info['description'],
+                                    new_project_info['authorTeam'],
+                                    new_project_info['authorsList'],
+                                    #new_project_info['projectLinksArray'],
+                                    new_project_info['proj_link'])
+
+    await conn.close()
+    await pool.close()
     return True
     
 

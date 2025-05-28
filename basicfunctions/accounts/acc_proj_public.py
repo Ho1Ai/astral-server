@@ -7,6 +7,8 @@ async def getUserPageDataById(id: int):
     try:
         db_getter = await conn.fetchrow('select * from astraldb_users where id = $1', id);
     #print(db_getter)
+        await conn.close()
+        await pool.close()
         interested_in_data = {
             "status_code": 0,
             "nickname": db_getter.get('nickname'),
@@ -14,6 +16,8 @@ async def getUserPageDataById(id: int):
             }
         return interested_in_data
     except Exception:
+        await conn.close()
+        await pool.close()
         #print(Exception)
         return {"status_code": 9}
     #pass
@@ -24,8 +28,11 @@ async def getUserPageDataByJWT(access: str, refresh: str):
     conn = await pool.acquire()
     tester = await token.getTokenInnerData__EMAIL(access, refresh)
     #print(tester)
+    #print(token.getTokenData(access, 'access'))
     try:
         db_getter = await conn.fetchrow('select * from astraldb_users where email = $1', tester.get('email'))
+        await conn.close()
+        await pool.close()
         #print(db_getter)
         #print(db_getter)
     
@@ -39,5 +46,7 @@ async def getUserPageDataByJWT(access: str, refresh: str):
         #print(final_data)
         return final_data
     except Exception:
+        await conn.close()
+        await pool.close()
         print('exception!')
         return {'status_code': 9}
