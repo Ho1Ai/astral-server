@@ -62,11 +62,11 @@ async def getInfo(proj_name_by_link: str):
                    'status_code': 0}
     proj_data_raw = await conn.fetchrow('select * from astraldb_projects where proj_link = $1', proj_name_by_link)
     array_num = 0
-    print(proj_data_raw)
+    #print(proj_data_raw)
     for index in proj_data_raw['authors_list']:
         proj_data_raw['authors_list'][array_num] = await accounts.fetchAccInfo(index)
         array_num += 1
-    print(proj_data_raw)
+    #print(proj_data_raw)
     #except Exception:
     #   print('exception')
     func_return['project_data']=proj_data_raw
