@@ -107,7 +107,7 @@ async def getProjectList(request: Request):
         print(response_body)
         print(token_data)
 
-        response_body['project_list']=await acc_proj_info.getAvailableProjects(token_data.get('nickname'))
+        response_body['project_list']=await acc_proj_info.getAvailableProjects(str(token_data.get('id')))
         #print(response_body['project_list'])
     else:
         response_body['status_code']=check_jwt_status.get('status_code')

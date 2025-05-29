@@ -2,6 +2,7 @@ errors list is here. You can read it if you need more docs for it
 
 0 - means that everything is OK. First used in accounts service (`./service/accounts/accounts.py`)
 
+3 - access denied. Appears when the user can't open this page
 4 - appears while user login. Means one of two things: 1. there is no such user; 2. password is not equal to password in database. All these reasons are in one, because we need only fact that there is an error, but not what exactly going on, because this errors list is used on client-side as a thing, which can just make us know that something went wrong. You can see what exactly happens using terminal, because it prints what exactly going on. This error may be occured only by file `./service/accounts/accounts.py`
 5 - appears while user creating an account. It means that there are some accounts, which use this email or username. It is used in `./service/accounts/accounts.py` and it is the only file, which returns this error (except routers, which returns errors as a status, which is just a line in json, which backend returns on client). There is no more cases, where this error could appear. Adding it when writting accounts service.
 

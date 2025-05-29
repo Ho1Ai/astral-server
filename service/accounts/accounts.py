@@ -87,3 +87,12 @@ async def sign_in(getter_data: adm.AccountLogin):
 
 
 
+async def fetchAccInfo(raw_id):
+    userid = int(raw_id)
+    pool = await db.db_connect()
+    conn = await pool.acquire()
+    test = await conn.fetchrow('select * from astraldb_users where id = $1', userid)
+    await conn.close()
+    await pool.close()
+    return test
+

@@ -30,11 +30,12 @@ async def getProjectInfo(project_name:str):
     return {"to_do_list":to_do_list, "project_main_info":project_info}
 
 @router.get('/get-available-projects')
-async def getAvailableProjects(username:str):
+async def getAvailableProjects(userid:str):
     #to_do_list = info.getToDo(project_name)
     #project_info = info.getInfo(username)
     #return [{"todo":getToDo, "project info": project_info}] #misprint
-    available_projects = await info.getAvailableProjects(username);
+    
+    available_projects = await info.getAvailableProjects(userid);
     return available_projects
 
 @router.put('/update-todo')

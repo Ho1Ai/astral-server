@@ -1,6 +1,8 @@
 from db_connect import db_connection as db
 from pydantic import BaseModel
 from dataModels.projects import globalDataModels
+from service.token import token_service
+from service.accounts import accounts
 
 static_content__to_do = [
             {
@@ -37,7 +39,7 @@ default_projects = [
             "id": 1,
             "name":"Project Astral",
             "description": "Project Astral - application for developers and their projects. Our main purpose is to create an application which can be used for free. You can make forks: it is open source. You can find everything (except backend) on GitHub. You can share your ideas on our Discord server. Together we can make good projects! We (especially me, Ho1Ai) wish you all the best. Good luck, y'all!",
-            "authorTeam": "Morlix Team",
+            "authorTeam": "Collapse Team",
             "authorsList": ["Ho1Ai"],
             "projectLinksArray": [{
                 "name": "GitHub",
@@ -52,8 +54,30 @@ async def getToDo(project_name:str):
 
 #----------PROJECT DATA----------
 
-async def getInfo(project_name: str):
-    return default_projects
+async def getInfo(proj_name_by_link: str):
+    pool = await db.db_connect()
+    conn = await pool.acquire()
+
+    func_return = {'is_ok': True,
+                   'status_code': 0}
+    proj_data_raw = await conn.fetchrow('select * from astraldb_projects where proj_link = $1', proj_name_by_link)
+    array_num = 0
+    print(proj_data_raw)
+    for index in proj_data_raw['authors_list']:
+        proj_data_raw['authors_list'][array_num] = await accounts.fetchAccInfo(index)
+        array_num += 1
+    print(proj_data_raw)
+    #except Exception:
+    #   print('exception')
+    func_return['project_data']=proj_data_raw
+
+    await conn.close()
+    await pool.close()
+
+    return func_return
+
+
+
 
 async def getAvailableProjects(username: str):
     #print(default_projects)
@@ -70,12 +94,13 @@ async def createProject(new_data: globalDataModels.ProjectModel):
         await pool.close()
         #print('can not create')
         return {'is_ok': False}
+    get_token_data = token_service.getTokenData(new_data.authorsList[0], 'refresh')
     new_project_info = {
             #"id":len(default_projects)+1,
         "name": new_data.name,
         "description": new_data.description,
         "authorTeam": new_data.authorTeam,
-        "authorsList": ['Ho1Ai','hoxxy'],
+        "authorsList": [str(get_token_data.get('data').get('id'))],
         "projectLinksArray": [{
             "name":"GitHub",
             "link":"https://github.com/Ho1Ai/project-astral"
