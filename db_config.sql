@@ -15,6 +15,8 @@ create table astraldb_tdl (
 	id BIGSERIAL PRIMARY KEY,
 	name text,
 	state smallint
+	taken_by bigint[]
+	target_project_id int
 );
 
 create table astraldb_users (
