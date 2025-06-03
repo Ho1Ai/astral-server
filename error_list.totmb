@@ -1,5 +1,7 @@
 errors list is here. You can read it if you need more docs for it
 
+-1 - default error. Means one of two errors: 1. Unexpected error; 2. I was so sleepy and didn't write normal error code. Second case will be fixed before 00002a
+
 0 - means that everything is OK. First used in accounts service (`./service/accounts/accounts.py`)
 
 3 - access denied. Appears when the user can't open this page
