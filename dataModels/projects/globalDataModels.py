@@ -25,11 +25,21 @@ class ToDoModel (BaseModel):
     id: int
     name: str
     state: int
+    takenBy: int
+
+class ToDoUpdater(BaseModel):
+    id: int
+    newState: int
+    takenBy: int
 
 class ToDoAppender(BaseModel):
+    proj_link: str
     name: str
-    state: int
 
+
+#class TDAF(BaseModel):
+#    proj_id: id
+#    name: str
 
 
 

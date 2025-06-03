@@ -4,6 +4,8 @@ from basicfunctions.accounts import acc_proj_info
 
 from dataModels.projects import globalDataModels
 
+from service.projects import projects
+
 router = APIRouter(prefix="/api/projects", tags=["projects API"])
 
 
@@ -38,6 +40,28 @@ async def getAvailableProjects(userid:str):
     available_projects = await info.getAvailableProjects(userid);
     return available_projects
 
+@router.get('/get-to-do-list')
+async def getToDoList(project_name: str):
+    #print(project_name)
+    
+    func_return = {'is_ok': True,
+                   'status_code': 0}
+
+    project_id_getter = await projects.getProjID(project_name)
+    if(project_id_getter.get('is_ok')==True and project_id_getter.get('target_id')):
+        response_constructor = await projects.getToDos(project_id_getter.get('target_id'))
+        if response_constructor.get('is_ok') == True:
+            func_return['to_do_list'] = response_constructor.get('return_data')
+        else:
+            func_return['is_ok']=False
+            func_return['status_code']=response_constructor.get('status_code')
+    else:
+        func_return['is_ok'] = False
+        func_return['status_code']=projectIdGetter.get('status_code')
+    return func_return
+
+    pass
+
 @router.put('/update-todo')
 async def updateToDoState(updateData: globalDataModels.ToDoModel):
     updater = await info.updateToDosInfo(updateData)
@@ -49,6 +73,17 @@ async def updateToDoState(updateData: globalDataModels.ToDoModel):
 
 @router.post('/append-todo')
 async def appendToDo(new_to_do: globalDataModels.ToDoAppender):
-    appender = await info.appendNewToDo(new_to_do.name, new_to_do.state)
+    #appender = await info.appendNewToDo(new_to_do.name, new_to_do.state)
     #print(new_to_do.name)
-    return {"ok": appender.get("is_ok"), "new_TDL": appender.get("new_TDL")}
+    func_return = {'is_ok': True,
+                   'status_code': 0}
+
+    append_id_getter = await projects.getProjID(new_to_do.proj_link)
+    if(append_id_getter.get('is_ok')==True and append_id_getter.get('target_id')):
+        append_test = await projects.appendToDo(append_id_getter['target_id'], new_to_do.name)
+    else:
+        func_return['is_ok']=False
+        func_return['status_code']=-1 # -1 is a default error. Sometimes I write while I'm sleepy so it is the best way to keep errors, but not to make it more complex for sleepy brain
+
+    #return {"ok": appender.get("is_ok"), "new_TDL": appender.get("new_TDL")}
+    return func_return
