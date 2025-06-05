@@ -21,7 +21,7 @@ cfg_token = {"access_secret": dotenv_values(".env").get('JWT_ACCESS_SECRET'),
 
 async def genAccess(data: adm.AccountLogin__tokenGen):
     token_data = {"id":data.get('id'),
-                  "email":data.get('email'),
+                 "email":data.get('email'),
                   "username":data.get('username'),
                   "expire_on": (datetime.utcnow()+timedelta(minutes = int(cfg_token.get('access_expire_mins')))).isoformat()}
     jwt_access = jwt.encode(token_data, cfg_token.get('access_secret'), cfg_token.get("algorithm"))

@@ -25,7 +25,7 @@ class ToDoModel (BaseModel):
     id: int
     name: str
     state: int
-    takenBy: int
+    #takenBy: int
 
 class ToDoUpdater(BaseModel):
     id: int

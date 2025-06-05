@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from basicfunctions.projects import info
 from basicfunctions.accounts import acc_proj_info 
 
@@ -63,10 +63,22 @@ async def getToDoList(project_name: str):
     pass
 
 @router.put('/update-todo')
-async def updateToDoState(updateData: globalDataModels.ToDoModel):
+async def updateToDoState(request: Request, updateData: globalDataModels.ToDoModel):
+    func_return = {'is_ok': True,
+                   'status_code': 0}
+
+    checkJWT = await token.checkJWTStatus(request.headers.get('X-JWT-Access'))
+    if(checkJWT.get('is_ok')==True):
+        token_data = token.getTokenData(request.headers.get('X-JWT-Refresh'), 'refresh')
+        func_return['access_JWT'] = await token.genAccess()
+        if(checkJWT.get('is_access_token_dead')):
+            func_return['refresh_JWT']
     updater = await info.updateToDosInfo(updateData)
+    #print(request.headers, '\n--------\n',updateData)
     
-    return {"ok": updater.get("is_ok"), "new_TDL": updater.get("new_TDL")};
+    if(getUnameData.get('access_JWT')):
+        func_return['']
+    #return {"ok": updater.get("is_ok"), "new_TDL": updater.get("new_TDL")};
     #is_ok = True if id == 25 else False
     #is_ok = True
     #return {'status': 201} if is_ok else {'status': 422}
@@ -77,6 +89,7 @@ async def appendToDo(new_to_do: globalDataModels.ToDoAppender):
     #print(new_to_do.name)
     func_return = {'is_ok': True,
                    'status_code': 0}
+
 
     append_id_getter = await projects.getProjID(new_to_do.proj_link)
     if(append_id_getter.get('is_ok')==True and append_id_getter.get('target_id')):
