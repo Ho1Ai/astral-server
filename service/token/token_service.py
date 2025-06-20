@@ -2,6 +2,8 @@ from jose import jwt
 from dotenv import dotenv_values
 from datetime import datetime, timedelta
 
+#import time
+
 #from db_connect import db_connection as db
 
 from dataModels.accounts import accountsDataModels as adm
@@ -33,12 +35,12 @@ async def genAccess(data: adm.AccountLogin__tokenGen):
 
 
 async def genRefresh(data: adm.AccountLogin__tokenGen):
-    token_data = {'id':data.get('id'),
+   token_data = {'id':data.get('id'),
                   'email':data.get('email'),
                   'nickname':data.get('nickname'),
                   'expire_on': (datetime.utcnow()+timedelta(days=int(cfg_token.get('refresh_expire_days')))).isoformat()}
-    jwt_refresh = jwt.encode(token_data, cfg_token.get('refresh_secret'), cfg_token.get('algorithm'))
-    return jwt_refresh
+   jwt_refresh = jwt.encode(token_data, cfg_token.get('refresh_secret'), cfg_token.get('algorithm'))
+   return jwt_refresh
 
 
 
@@ -50,7 +52,7 @@ async def getTokenInnerData__EMAIL(access_token:str, refresh_token: str): # and 
     jwt_input = jwt.decode(access_token, cfg_token.get('access_secret'), algorithms=cfg_token.get('algorithm'))
     response={'status_code': 0}
     if(datetime.utcnow()>datetime.fromisoformat(jwt_input.get('expire_on'))):
-        print('old')
+        #print('old')
         jwt_input = jwt.decode(refresh_token, cfg_token.get('refresh_secret'), algorithms=cfg_token.get('algorithm'))
         if(datetime.utcnow()>datetime.fromisoformat(jwt_input.get('expire_on'))):
             print('old refresh')
@@ -88,6 +90,7 @@ def getTokenData(to_unpack_token: str, token_type: str):
         return {'is_ok': True,
                 'data': jwt.decode(to_unpack_token, cfg_token.get('access_secret'), algorithms=cfg_token.get('algorithm'))}
     elif(token_type == 'refresh'):
+        #print(token_type, to_unpack_token, cfg_token.get('access_secret'))
         return {"is_ok": True, 
                 'data': jwt.decode(to_unpack_token, cfg_token.get('refresh_secret'), algorithms=cfg_token.get('algorithm'))}
     else:
@@ -108,6 +111,9 @@ def checkJWTStatus(access_jwt: str, refresh_jwt: str):
         print('access is old')
         func_return['is_access_token_dead']=True
         current_jwt = jwt.decode(refresh_jwt, cfg_token.get('refresh_secret'), algorithms=cfg_token.get('algorithm'))
+        #time.sleep(1)
+        #print(current_jwt)
+        #time.sleep(1)
         if datetime.fromisoformat(current_jwt.get('expire_on'))<datetime.utcnow():
             print('all the tokens expired. Error 8')
             func_return['is_ok']=False

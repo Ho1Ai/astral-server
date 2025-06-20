@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Request
 from basicfunctions.projects import info
 from basicfunctions.accounts import acc_proj_info 
+#import time
 
 from dataModels.projects import globalDataModels
 
 from service.projects import projects
+from service.token import token_service as token
 
 router = APIRouter(prefix="/api/projects", tags=["projects API"])
 
@@ -27,9 +29,21 @@ async def createNewProject(new_project_data: globalDataModels.ProjectModel):
 #----------PROJECT DATA, TODOS AND PROJECT LIST RECEIVER----------#
 @router.get('/get-project-info')
 async def getProjectInfo(project_name:str):
-    to_do_list = await info.getToDo(project_name)
+    to_do_list = await getToDoList(project_name)
     project_info= await info.getInfo(project_name)
-    return {"to_do_list":to_do_list, "project_main_info":project_info}
+    func_return = {'is_ok': True,
+                   'status_code':0}
+    if(to_do_list.get('is_ok')):
+        func_return['to_do_list']=to_do_list.get('to_do_list')
+    else:
+        func_return['to_do_list']=[]    
+    #return {"to_do_list":to_do_list, "project_main_info":project_info}
+    func_return['project_main_info'] = project_info
+    #print(func_return)
+    return func_return
+
+
+
 
 @router.get('/get-available-projects')
 async def getAvailableProjects(userid:str):
@@ -49,6 +63,7 @@ async def getToDoList(project_name: str):
 
     project_id_getter = await projects.getProjID(project_name)
     if(project_id_getter.get('is_ok')==True and project_id_getter.get('target_id')):
+        #print(project_id_getter.get('target_id'))
         response_constructor = await projects.getToDos(project_id_getter.get('target_id'))
         if response_constructor.get('is_ok') == True:
             func_return['to_do_list'] = response_constructor.get('return_data')
@@ -58,26 +73,38 @@ async def getToDoList(project_name: str):
     else:
         func_return['is_ok'] = False
         func_return['status_code']=projectIdGetter.get('status_code')
+    #print('QWPA', func_return)
     return func_return
 
-    pass
+
+
 
 @router.put('/update-todo')
 async def updateToDoState(request: Request, updateData: globalDataModels.ToDoModel):
     func_return = {'is_ok': True,
-                   'status_code': 0}
-
-    checkJWT = await token.checkJWTStatus(request.headers.get('X-JWT-Access'))
+                   'status_code': 0} 
+    checkJWT = token.checkJWTStatus(request.headers.get('X-JWT-Access'), request.headers.get('X-JWT-Refresh'))
+    #time.sleep(1)
     if(checkJWT.get('is_ok')==True):
         token_data = token.getTokenData(request.headers.get('X-JWT-Refresh'), 'refresh')
-        func_return['access_JWT'] = await token.genAccess()
+        #time.sleep(1)
+        #print("/////   token data   /////  ",token_data)
+        func_return['access_JWT'] = await token.genAccess(token_data.get('data'))
         if(checkJWT.get('is_access_token_dead')):
-            func_return['refresh_JWT']
-    updater = await info.updateToDosInfo(updateData)
-    #print(request.headers, '\n--------\n',updateData)
+            func_return['refresh_JWT'] = await token.genRefresh(token_data.get('data'))
+        updater = await info.updateToDosInfo(updateData)
+        func_return['new_tdl'] = updater
+        #time.sleep(1)
+        #print(func_return)
     
-    if(getUnameData.get('access_JWT')):
-        func_return['']
+    #time.sleep(1)
+    #print(func_return)
+    #time.sleep(1)
+    return func_return
+	#print(request.headers, '\n--------\n',updateData)
+    
+    #if(getUnameData.get('access_JWT')):
+    #    func_return[''] # what the f*** it was supposed to do?!
     #return {"ok": updater.get("is_ok"), "new_TDL": updater.get("new_TDL")};
     #is_ok = True if id == 25 else False
     #is_ok = True
