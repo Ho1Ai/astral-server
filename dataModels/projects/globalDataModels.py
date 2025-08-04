@@ -21,6 +21,11 @@ class ProjectModel(BaseModel):
 
 
 # ----------TO DO LIST----------#
+class ToDoChanger (BaseModel):
+	id: int
+	state: int
+	taken_by: str	
+
 class ToDoModel (BaseModel):
     id: int
     name: str

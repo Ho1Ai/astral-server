@@ -81,26 +81,32 @@ async def getToDoList(project_name: str):
 
 @router.put('/update-todo')
 async def updateToDoState(request: Request, updateData: globalDataModels.ToDoModel):
-    func_return = {'is_ok': True,
+	func_return = {'is_ok': True,
                    'status_code': 0} 
-    checkJWT = token.checkJWTStatus(request.headers.get('X-JWT-Access'), request.headers.get('X-JWT-Refresh'))
+	checkJWT = token.checkJWTStatus(request.headers.get('X-JWT-Access'), request.headers.get('X-JWT-Refresh'))
     #time.sleep(1)
-    if(checkJWT.get('is_ok')==True):
-        token_data = token.getTokenData(request.headers.get('X-JWT-Refresh'), 'refresh')
+	if(checkJWT.get('is_ok')==True):
+		token_data = token.getTokenData(request.headers.get('X-JWT-Refresh'), 'refresh')
         #time.sleep(1)
         #print("/////   token data   /////  ",token_data)
-        func_return['access_JWT'] = await token.genAccess(token_data.get('data'))
-        if(checkJWT.get('is_access_token_dead')):
-            func_return['refresh_JWT'] = await token.genRefresh(token_data.get('data'))
-        updater = await info.updateToDosInfo(updateData)
-        func_return['new_tdl'] = updater
+        #if(request.get(''))
+		#print(request)
+		#print(updateData.state)
+		getter_id = await info.getProjId(updateData.id)
+		#print(token_data)
+		#print(getter_id, "asdf")
+		func_return['access_JWT'] = await token.genAccess(token_data.get('data'))
+		if(checkJWT.get('is_access_token_dead')):
+			func_return['refresh_JWT'] = await token.genRefresh(token_data.get('data'))
+		updater = await info.updateToDosInfo(updateData.id, updateData.state, token_data.get('data').get('id'), getter_id)
+		func_return['new_tdl'] = updater
         #time.sleep(1)
         #print(func_return)
     
     #time.sleep(1)
     #print(func_return)
     #time.sleep(1)
-    return func_return
+	return func_return
 	#print(request.headers, '\n--------\n',updateData)
     
     #if(getUnameData.get('access_JWT')):

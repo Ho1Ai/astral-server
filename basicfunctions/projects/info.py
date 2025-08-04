@@ -124,9 +124,34 @@ async def createProject(new_data: globalDataModels.ProjectModel):
 
 #----------INNER PROJECT----------
 
-async def updateToDosInfo(todo_updated: ToDoData):
-    static_content__to_do[todo_updated.id-1]['state'] = todo_updated.state
-    return {"is_ok": True, "new_TDL": static_content__to_do}
+async def getProjId(id:int):
+	pool = await db.db_connect()
+	conn = await pool.acquire()
+
+	return_data = await conn.fetchrow('select * from astraldb_tdl where id=$1', id)
+	#print(return_data.target_project_id)
+	#print(return_data.get('target_project_id'), "asedfasdf")
+	await conn.close()
+	await pool.close()
+	return return_data.get('target_project_id')
+
+async def updateToDosInfo(change_id: int, new_state: int, taken_by: int, targ_id:int):
+    #static_content__to_do[todo_updated.id-1]['state'] = todo_updated.state
+    #return {"is_ok": True, "new_TDL": static_content__to_do}
+	pool = await db.db_connect()
+	conn = await pool.acquire()
+
+	ins_data_ids = [taken_by]
+
+	#print(targ_id, taken_by)
+
+	test = await conn.execute("update astraldb_tdl set state=$1, taken_by=$2 where id=$3", new_state, ins_data_ids, change_id)
+	
+	fetch_tdl = await conn.fetchrow('select * from astraldb_tdl where target_project_id=$1', targ_id)
+
+	await conn.close()
+	await pool.close()
+	return fetch_tdl
 
 async def appendNewToDo(name: str, state: int):
     static_content__to_do.append({

@@ -12,6 +12,8 @@ allowed_origins=[
         "http://localhost:5173"
         ]
 
+#to do: use only email in JWT content and share only hashed email
+
 app.add_middleware(CORSMiddleware, 
                    allow_origins=["*"], 
                    allow_methods=["*"],
