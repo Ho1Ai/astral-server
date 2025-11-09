@@ -99,7 +99,8 @@ async def updateToDoState(request: Request, updateData: globalDataModels.ToDoMod
 		if(checkJWT.get('is_access_token_dead')):
 			func_return['refresh_JWT'] = await token.genRefresh(token_data.get('data'))
 		updater = await info.updateToDosInfo(updateData.id, updateData.state, token_data.get('data').get('id'), getter_id)
-		func_return['new_tdl'] = updater
+		new_tdl = await projects.getToDos(project_id=getter_id)
+		func_return['new_tdl'] = new_tdl
         #time.sleep(1)
         #print(func_return)
     
@@ -118,6 +119,7 @@ async def updateToDoState(request: Request, updateData: globalDataModels.ToDoMod
 
 @router.post('/append-todo')
 async def appendToDo(new_to_do: globalDataModels.ToDoAppender):
+    print(new_to_do)
     #appender = await info.appendNewToDo(new_to_do.name, new_to_do.state)
     #print(new_to_do.name)
     func_return = {'is_ok': True,
@@ -130,6 +132,10 @@ async def appendToDo(new_to_do: globalDataModels.ToDoAppender):
     else:
         func_return['is_ok']=False
         func_return['status_code']=-1 # -1 is a default error. Sometimes I write while I'm sleepy so it is the best way to keep errors, but not to make it more complex for sleepy brain
+    print("asdfasdfasdfasdf")
+    print(append_id_getter['target_id'])
 
-    #return {"ok": appender.get("is_ok"), "new_TDL": appender.get("new_TDL")}
+    #func_return['new_tdl'] = projects.getToDos(str(append_id_getter['target_id']))
+    func_return['new_tdl'] = await projects.getToDos(append_id_getter['target_id'])
+	#return {"ok": appender.get("is_ok"), "new_TDL": appender.get("new_TDL")}
     return func_return

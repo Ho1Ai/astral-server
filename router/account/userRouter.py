@@ -104,8 +104,8 @@ async def getProjectList(request: Request):
         response_body['access_jwt']=await token_service.genAccess(token_data)
         if(check_jwt_status.get('is_access_token_dead')==True):
             response_body['refresh_jwt']=await token_service.genRefresh(token_data) # I don't know why "await", never ask me, I don't remember what I did here
-        print(response_body)
-        print(token_data)
+        #print(response_body)
+        #print(token_data)
 
         response_body['project_list']=await acc_proj_info.getAvailableProjects(str(token_data.get('id')))
         #print(response_body['project_list'])

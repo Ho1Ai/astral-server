@@ -5,6 +5,7 @@ from dataModels.projects import globalDataModels as proj_models
 async def getToDos(project_id: str):
     pool = await db.db_connect()
     conn = await pool.acquire()
+    print("id:",project_id)
     
     func_return={'is_ok': True,
                  'status_code': 0}
